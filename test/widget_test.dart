@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:app_quan_ly_sinh_vien/main.dart';
 
 void main() {
-  testWidgets('Student info button toggles details', (
+  testWidgets('Home opens the Generics assignment', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(const MyApp());
 
-    expect(find.text('Hiển thị thông tin'), findsOneWidget);
-    expect(find.text('Thông tin sinh viên'), findsNothing);
+    await tester.tap(find.text('Thực hành Generics'));
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byType(ElevatedButton));
-    await tester.pump();
-
-    expect(find.text('Ẩn thông tin'), findsOneWidget);
-    expect(find.text('Thông tin sinh viên'), findsOneWidget);
+    expect(
+      find.textContaining('Student extends Genericclass<Object>'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Type (runtimeType): Student'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }
