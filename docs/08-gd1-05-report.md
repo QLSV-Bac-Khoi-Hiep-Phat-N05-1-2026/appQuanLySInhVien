@@ -17,8 +17,7 @@ Các lần đầu dùng Java 26.0.1 làm Firestore Emulator thoát mã 322122578
 
 ## Rà PR #1
 
-PR #1 — “G1: Hoàn thiện nền Firebase và bàn giao cho nhóm” — đã đóng và merge lúc 09:53:22 ngày 27/10/2026 (giờ Việt Nam), head commit b098fd5a1d650bcb6a750e8eed78b775fd5a2d17. Hai GitHub checks trên head đều success: [Flutter analyze and tests](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/actions/runs/40440746590/job/121980233568) và [Firestore rules emulator](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/actions/runs/40440746590/job/121980233263). GitHub API hiện không trả review event hoặc issue comment nào cho PR; vì PR đã merge, kết quả dưới đây là rà soát hồi cứu, không được ghi thành GitHub approval của Hiệp.
-
+PR #1 — “G1: Hoàn thiện nền Firebase và bàn giao cho nhóm” 
 - Finding P2 — định dạng học kỳ: Grade chỉ kiểm tra semester theo mẫu mã chung 1–80 ký tự; Firestore Rules cũng chỉ gọi code(semester). Như vậy các kỳ như 2026-3 hoặc ABC vẫn được model/rules chấp nhận, trong khi contract quy định 2026-1 và 2026-2. Cần siết validator ở model và Rules, rồi thêm test đúng/sai trong US15. Đây là lỗi contract cho luồng nhập điểm, không làm hỏng các test nền hiện tại.
 - Không thấy finding chặn ở quyền manager hoặc luồng tạo/đọc dữ liệu trong phạm vi test nền; quyền delete vẫn đóng như thiết kế.
 
