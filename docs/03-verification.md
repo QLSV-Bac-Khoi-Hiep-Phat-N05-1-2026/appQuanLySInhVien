@@ -54,3 +54,52 @@ G1-04, G1-05 do Phát, Khôi, Hiệp thực hiện và tự mở PR, không đá
 
 Chưa triển khai UI của 16 stories, chưa hoàn thành Câu 6/Câu 8 cho toàn bộ dự án.
 Không đánh dấu đã có review của Hiệp nếu Hiệp chưa review thực tế ở việc G1-05.
+Tái kiểm chứng G1-05 — 27/10/2026
+
+Kết quả chạy lại trên môi trường cập nhật: Flutter 3.47.8 / Dart 3.13.7, Node 24.22.0.
+
+| Hạng mục | Kết quả thực tế |
+|---|---|
+| flutter analyze | PASS — No issues found |
+| flutter test | PASS — 21 tests |
+| Firestore Rules Emulator | PASS — 6 tests, project giả demo-qlsv |
+| Cổng emulator | 18080 bị Firebase CLI từ chối; chạy thành công bằng config tạm cổng 18081; config tạm đã dọn |
+| Firebase cloud | Không được truy cập trong lượt kiểm tra này |
+
+GitHub PR #1 (head b098fd5) đã merge; checks “Flutter analyze and tests” và “Firestore rules emulator” đều success. GitHub API không có review event hoặc issue comment. Rà soát hồi cứu ghi nhận finding P2: validator model/rules chấp nhận kỳ ngoài hợp đồng (ví dụ 2026-3); chuyển xử lý cho US15. Không ghi nhận approval event của Hiệp trên PR đã merge.
+
+npm ci cài thành công dependency theo lockfile; npm báo 11 advisory trong dev dependency tree (6 moderate, 5 high). Không chạy npm audit fix.
+
+Báo cáo G1-05 và ảnh giao diện minh chứng: docs/08-gd1-05-report.md, docs/screenshots/subjects.png.
+
+## Ghi chú cập nhật trạng thái giao diện
+
+Mục “Chưa triển khai UI của 16 stories” ở phần nghiệm thu phía trên mô tả trạng thái nền G1 tại thời điểm PR #1 merge. Sau đó, US13–US14 có màn hình danh sách/thêm môn trong working tree; chưa merge và chưa kiểm thử Firebase cloud. Widget tests hiện có dùng FakeFirestore.
+
+## Tái kiểm chứng mới nhất G1-05 — 27/10/2026
+Kết quả chạy lại trên môi trường cập nhật: Flutter 3.47.8 / Dart 3.13.7, Node 24.22.0.
+
+| Hạng mục | Kết quả thực tế |
+|---|---|
+| flutter analyze | PASS — No issues found |
+| flutter test | PASS — 21 tests |
+| Firestore Rules Emulator | PASS — 6 tests, project giả demo-qlsv |
+| Cổng emulator | 18080 bị Firebase CLI từ chối; chạy thành công bằng config tạm cổng 18081; config tạm đã dọn |
+| Firebase cloud | Không được truy cập trong lượt kiểm tra này
+
+GitHub PR #1 (head b098fd5) đã merge; checks “Flutter analyze and tests” và “Firestore rules emulator” đều success. GitHub API không có review event hoặc issue comment. Rà soát hồi cứu ghi nhận finding P2: validator model/rules chấp nhận kỳ ngoài hợp đồng (ví dụ 2026-3); chuyển xử lý cho US15. Không ghi nhận approval event của Hiệp trên PR đã merge.
+
+npm ci cài thành công dependency theo lockfile; npm báo 11 advisory trong dev dependency tree (6 moderate, 5 high). Không chạy npm audit fix.
+
+Báo cáo G1-05 và ảnh giao diện minh chứng: docs/08-gd1-05-report.md, docs/screenshots/subjects.png.
+Ghi chú cập nhật trạng thái giao diện
+
+Mục “Chưa triển khai UI của 16 stories” ở phần nghiệm thu phía trên mô tả trạng thái nền G1 tại thời điểm PR #1 merge. Sau đó, US13–US14 có màn hình danh sách/thêm môn trong working tree; chưa merge và chưa kiểm thử Firebase cloud. Widget tests hiện có dùng FakeFirestore.
+## Tái kiểm chứng mới nhất G1-05 — 27/10/2026
+
+- Môi trường: Flutter 3.47.8 / Dart 3.13.7, Node 24.22.0, Temurin Java 21.0.12.1 (portable, chỉ dùng cho tiến trình test).
+- flutter analyze: PASS — No issues found.
+- flutter test: PASS — 21 tests.
+- Firestore Rules Emulator: PASS — 6 tests, project giả demo-qlsv, cổng chuẩn 18080.
+- Chẩn đoán lần chạy đầu: Java trên PATH là 26.0.1; emulator thoát mã 3221225786. Dùng JDK 21 portable sau đó thì test đạt. Không truy cập Firebase cloud và không thay đổi cài đặt Java hệ thống.
+- PR #1 head b098fd5: hai GitHub checks Flutter analyze/tests và Firestore rules emulator success; GitHub API không trả review event/comment. Rà soát hồi cứu ghi nhận finding P2 về validator kỳ học, chuyển follow-up cho US15.
