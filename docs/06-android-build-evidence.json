@@ -1,0 +1,15 @@
+{
+  "verifiedDateVietnam": "2026-10-27",
+  "command": "flutter build apk --debug --no-pub",
+  "result": "PASS",
+  "flutter": "3.47.2",
+  "dart": "3.13.2",
+  "java": "21",
+  "androidSdk": "36.0.0",
+  "applicationId": "com.example.app_quan_ly_sinh_vien",
+  "artifact": "build/app/outputs/flutter-apk/app-debug.apk",
+  "bytes": 158145830,
+  "sha256": "abcec9a5436782ee06c4a5f0f3f9690dd59569393505158ad7c4d5cdf2582268",
+  "runtimeUiTestOnAndroidDevice": false,
+  "notes": "Debug APK build verified. Physical-device/emulator UI acceptance belongs to subsequent module testing."
+}
