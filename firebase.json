@@ -1,0 +1,42 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "quan-ly-sinh-vien-ba83b",
+          "appId": "1:184427813323:android:d7134119c77105e8487e4e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "quan-ly-sinh-vien-ba83b",
+          "configurations": {
+            "android": "1:184427813323:android:d7134119c77105e8487e4e"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080
+    },
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true
+    }
+  }
+}

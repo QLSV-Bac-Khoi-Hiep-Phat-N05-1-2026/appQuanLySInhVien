@@ -1,0 +1,39 @@
+{
+  "projectId": "quan-ly-sinh-vien-ba83b",
+  "location": "asia-southeast1",
+  "billingPlanUpgrade": false,
+  "verifiedAtVietnam": "01:39:58 27/10/2026",
+  "developmentAccounts": [
+    {
+      "displayName": "Nguyễn Văn Bắc",
+      "email": "bac.g1@qlsv.example",
+      "signInAndOwnProfileRead": "PASS"
+    },
+    {
+      "displayName": "Nguyễn Bá Phát",
+      "email": "phat.g1@qlsv.example",
+      "signInAndOwnProfileRead": "PASS"
+    },
+    {
+      "displayName": "Nguyễn Minh Khôi",
+      "email": "khoi.g1@qlsv.example",
+      "signInAndOwnProfileRead": "PASS"
+    },
+    {
+      "displayName": "Nguyễn Huy Hiệp",
+      "email": "hiep.g1@qlsv.example",
+      "signInAndOwnProfileRead": "PASS"
+    }
+  ],
+  "authenticatedReadWrite": "PASS",
+  "anonymousReadDenied": "PASS",
+  "invalidScoreDenied": "PASS",
+  "selfPromotionDenied": "PASS",
+  "sampleDocuments": [
+    "classes/G1_CLASS_a28b1a",
+    "students/G1_SV_a28b1a",
+    "subjects/G1_MOB_a28b1a",
+    "grades/G1_SV_a28b1a~G1_MOB_a28b1a~2026-1"
+  ],
+  "credentialsCommitted": false
+}

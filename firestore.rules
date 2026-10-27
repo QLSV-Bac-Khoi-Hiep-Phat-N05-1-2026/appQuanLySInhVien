@@ -1,0 +1,87 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function manager() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager';
+    }
+    function code(value) {
+      return value is string && value.matches('^[A-Za-z0-9_-]{1,80}$');
+    }
+    function text(value, max) {
+      return value is string && value.size() > 0 && value.size() <= max
+        && value.matches('.*[^ \\t\\r\\n].*');
+    }
+    function email(value) {
+      return value is string && value.size() <= 254
+        && value.matches('^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$');
+    }
+    function validUser(data) {
+      return data.keys().hasAll(['email', 'displayName', 'role'])
+        && data.keys().hasOnly(['email', 'displayName', 'role'])
+        && email(data.email) && text(data.displayName, 150)
+        && data.role == 'manager';
+    }
+    match /users/{uid} {
+      allow get: if request.auth != null && request.auth.uid == uid;
+      allow update: if manager() && request.auth.uid == uid
+        && validUser(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName']);
+      // Accounts and manager permissions are provisioned with the Console/Admin SDK.
+      allow list, create, delete: if false;
+    }
+    function validClass(id, data) {
+      return code(id) && data.keys().hasAll(['name', 'major', 'cohort'])
+        && data.keys().hasOnly(['name', 'major', 'cohort'])
+        && text(data.name, 150) && text(data.major, 150) && text(data.cohort, 30);
+    }
+    match /classes/{id} {
+      allow read: if manager();
+      allow create, update: if manager() && validClass(id, request.resource.data);
+      allow delete: if false;
+    }
+    function validStudent(id, data) {
+      return code(id) && data.keys().hasAll(['name', 'major', 'age', 'classId', 'email'])
+        && data.keys().hasOnly(['name', 'major', 'age', 'classId', 'email'])
+        && text(data.name, 150) && text(data.major, 150)
+        && data.age is int && data.age >= 1 && data.age <= 120
+        && (data.email == '' || email(data.email))
+        && (data.classId == null || (code(data.classId)
+          && exists(/databases/$(database)/documents/classes/$(data.classId))));
+    }
+    match /students/{id} {
+      allow read: if manager();
+      allow create, update: if manager() && validStudent(id, request.resource.data);
+      // US08 will add a deletion workflow that deals with related grades.
+      allow delete: if false;
+    }
+    function validSubject(id, data) {
+      return code(id) && data.keys().hasAll(['name', 'credits'])
+        && data.keys().hasOnly(['name', 'credits']) && text(data.name, 150)
+        && data.credits is int && data.credits >= 1 && data.credits <= 10;
+    }
+    match /subjects/{id} {
+      allow read: if manager();
+      allow create, update: if manager() && validSubject(id, request.resource.data);
+      allow delete: if false;
+    }
+    function validGrade(id, data) {
+      return data.keys().hasAll(['studentId', 'subjectId', 'semester', 'score'])
+        && data.keys().hasOnly(['studentId', 'subjectId', 'semester', 'score'])
+        && code(data.studentId) && code(data.subjectId) && code(data.semester)
+        && id == data.studentId + '~' + data.subjectId + '~' + data.semester
+        && data.score is number && data.score >= 0 && data.score <= 10
+        && exists(/databases/$(database)/documents/students/$(data.studentId))
+        && exists(/databases/$(database)/documents/subjects/$(data.subjectId));
+    }
+    match /grades/{id} {
+      allow read: if manager();
+      allow create, update: if manager() && validGrade(id, request.resource.data);
+      allow delete: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

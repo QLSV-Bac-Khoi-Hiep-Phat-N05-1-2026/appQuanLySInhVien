@@ -24,8 +24,19 @@ Tại Home, chọn **Thực hành Generics**.
 ## Nội dung nộp
 
 - Code chính: ba file được liên kết ở trên.
-- README: [README trên GitHub](https://github.com/uDQuanLySV-Bac-Khoi-Hiep-N05-1-2026/appQuanLySInhVien/blob/main/README.md).
+- README: [README trên GitHub](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/blob/main/README.md).
 - Ảnh minh họa màn hình Flutter (xuất bằng widget test): [generics.png](docs/screenshots/generics.png).
-- Commit: xem commit **Hoàn thành bài tập Generics** trong [lịch sử commit](https://github.com/uDQuanLySV-Bac-Khoi-Hiep-N05-1-2026/appQuanLySInhVien/commits/main/).
+- Commit: xem commit **Hoàn thành bài tập Generics** trong [lịch sử commit](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/commits/main/).
 
 ![Kết quả bài tập Generics](docs/screenshots/generics.png)
+
+## Bài tập lớn cuối kỳ
+
+- [16 user stories và nghiệm thu](docs/01-user-stories.md).
+- [Model, Firestore, API và hướng dẫn thiết lập](docs/02-data-and-firebase.md).
+- [Trạng thái kiểm chứng](docs/03-verification.md).
+
+Phần nền dữ liệu đã chuẩn bị; giao diện nghiệp vụ của 16 stories còn trong backlog.
+
+- [Hướng dẫn nhận việc cho Bắc, Phát, Khôi, Hiệp](docs/04-team-handoff.md).
+- [Bằng chứng kiểm tra Firebase cloud](docs/05-g1-cloud-evidence.json).

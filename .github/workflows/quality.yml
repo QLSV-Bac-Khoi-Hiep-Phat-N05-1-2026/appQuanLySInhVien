@@ -1,0 +1,44 @@
+name: Foundation checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  flutter:
+    name: Flutter analyze and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.2'
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+
+  firestore:
+    name: Firestore rules emulator
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/firestore-tests/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm --prefix tools/firestore-tests ci
+      - name: Run rules tests without cloud credentials
+        run: ./tools/firestore-tests/node_modules/.bin/firebase emulators:exec --config firebase.test.json --only firestore --project demo-qlsv "npm --prefix tools/firestore-tests test"
