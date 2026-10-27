@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'practice_one_screen.dart';
 import 'generics_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -26,6 +27,18 @@ class HomeScreen extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(builder: (_) => const GenericsScreen()),
+              ),
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: const Icon(Icons.restaurant_menu),
+              title: const Text('Phần thực hành số 1'),
+              subtitle: const Text('Strawberry Pavlova • Row và Column'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const PracticeOneScreen(),
+                ),
               ),
             ),
           ],

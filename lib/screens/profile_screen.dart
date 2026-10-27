@@ -5,6 +5,14 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('PROFILE', style: TextStyle(fontSize: 30)));
+    return const SafeArea(
+      child: Padding(
+        padding: EdgeInsets.all(20),
+        child: Text(
+          'Tài khoản',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
   }
 }

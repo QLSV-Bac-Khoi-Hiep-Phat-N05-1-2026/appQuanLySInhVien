@@ -5,9 +5,11 @@ import 'screens/detail_screen.dart';
 import 'screens/contact_screen.dart';
 import 'screens/profile_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
+import 'widgets/firebase_app_loader.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const FirebaseAppLoader(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
