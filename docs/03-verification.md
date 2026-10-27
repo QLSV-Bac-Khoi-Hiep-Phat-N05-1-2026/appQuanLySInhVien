@@ -65,6 +65,7 @@ Kết quả chạy lại trên môi trường cập nhật: Flutter 3.47.8 / Dar
 | Firestore Rules Emulator | PASS — 6 tests, project giả demo-qlsv |
 | Cổng emulator | 18080 bị Firebase CLI từ chối; chạy thành công bằng config tạm cổng 18081; config tạm đã dọn |
 | Firebase cloud | Không được truy cập trong lượt kiểm tra này |
+<img width="358" height="106" alt="image" src="https://github.com/user-attachments/assets/eec0bd1a-be1f-4c63-bb65-fa8b80d85577" />
 
 GitHub PR #1 (head b098fd5) đã merge; checks “Flutter analyze and tests” và “Firestore rules emulator” đều success. GitHub API không có review event hoặc issue comment. Rà soát hồi cứu ghi nhận finding P2: validator model/rules chấp nhận kỳ ngoài hợp đồng (ví dụ 2026-3); chuyển xử lý cho US15. Không ghi nhận approval event của Hiệp trên PR đã merge.
 
