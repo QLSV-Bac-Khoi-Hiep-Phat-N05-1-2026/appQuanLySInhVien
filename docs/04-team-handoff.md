@@ -4,10 +4,10 @@
 
 | Thành viên | Nhánh GĐ1 đề xuất | Việc đang nhận |
 |---|---|---|
-| Nguyễn Văn Bắc — nhóm trưởng | codex/g1-foundation | G1-01: nền code/contract/PR. G1-02: Firebase + Android dùng chung. |
-| Nguyễn Bá Phát | codex/g1-model-review | G1-03: rà model, quan hệ, mô tả phương thức và 1 Class Diagram. |
-| Nguyễn Minh Khôi | codex/g1-wireframes | G1-04: wireframe toàn bộ màn hình, ít nhất 5 flow, style và điều hướng. |
-| Nguyễn Huy Hiệp | codex/g1-test-plan | G1-05: ma trận 16 stories, dữ liệu mẫu, rà test nền và PR nhóm trưởng. |
+| Nguyễn Văn Bắc — nhóm trưởng | g1-foundation | G1-01: nền code/contract/PR. G1-02: Firebase + Android dùng chung. |
+| Nguyễn Bá Phát | g1-model-review | G1-03: rà model, quan hệ, mô tả phương thức và 1 Class Diagram. |
+| Nguyễn Minh Khôi | g1-wireframes | G1-04: wireframe toàn bộ màn hình, ít nhất 5 flow, style và điều hướng. |
+| Nguyễn Huy Hiệp | g1-test-plan | G1-05: ma trận 16 stories, dữ liệu mẫu, rà test nền và PR nhóm trưởng. |
 
 Đây là phân công GĐ1. Ba thành viên có thể nhận bản nền để làm việc GĐ1 ngay khi
 PR nền được merge; chưa tự chuyển sang code GĐ2 trước khi cả 5 việc GĐ1 đạt.
@@ -19,7 +19,7 @@ git clone https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVie
 Set-Location appQuanLySInhVien
 git switch main
 git pull --ff-only origin main
-git switch -c codex/g1-model-review  # thay bằng nhánh của mình ở bảng trên
+git switch -c g1-model-review  # thay bằng nhánh của mình ở bảng trên
 flutter pub get
 flutter analyze
 flutter test
