@@ -29,7 +29,7 @@ void main() {
       final reopened = ProjectStore.demo();
       await reopened.initialize();
       expect(
-        reopened.students.where((v) => v.studentId == 'NEW01').single.getName(),
+        reopened.students.where((v) => v.studentId == 'NEW01').single.name,
         'Tên đã sửa',
       );
       expect(

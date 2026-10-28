@@ -24,7 +24,7 @@ void main() {
     final restored = Student.fromMap(student.studentId, student.toMap());
     expect(restored.studentId, student.studentId);
     expect(restored.classId, room.id);
-    expect(restored.getName(), student.getName());
+    expect(restored.name, student.name);
     expect(student.toMap().containsKey('id'), false);
     final subject = Subject(id: 'MOB01', name: 'Lập trình di động', credits: 3);
     expect(Subject.fromMap(subject.id, subject.toMap()).credits, 3);
@@ -37,13 +37,14 @@ void main() {
     expect(Grade.fromMap(grade.id, grade.toMap()).score, 8.5);
   });
 
-  test('Student catches invalid legacy mutation before serialization', () {
-    final student = Student();
-    student.setId(123);
-    expect(student.toMap, throwsA(isA<TypeError>()));
-    student.setId('23016960');
-    student.age = -1;
-    expect(student.toMap, throwsFormatException);
+  test('Student rejects invalid values before creating a document', () {
+    expect(() => Student(age: -1), throwsFormatException);
+    expect(() => Student(studentId: 'invalid/id'), throwsFormatException);
+    expect(() => Student(name: '   '), throwsFormatException);
+    final original = Student(name: 'Sinh viên mẫu', classId: 'CNTT01');
+    final restored = Student.fromMap(original.studentId, original.toMap());
+    expect(restored.name, original.name);
+    expect(restored.classId, original.classId);
   });
 
   test('Models reject malformed or incomplete Firestore documents', () {

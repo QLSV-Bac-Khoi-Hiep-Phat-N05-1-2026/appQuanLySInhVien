@@ -5,9 +5,9 @@ import '../models/student.dart';
 import '../services/project_store.dart';
 import '../ui/project_theme.dart';
 import '../ui/record_form.dart';
-import 'generics_screen.dart';
+import 'grades_screen.dart';
 import 'learning_sample_screen.dart';
-import 'practice_one_screen.dart';
+import 'subjects_screen.dart';
 
 class ProjectWorkspace extends StatefulWidget {
   const ProjectWorkspace({super.key, required this.store});
@@ -19,6 +19,7 @@ class ProjectWorkspace extends StatefulWidget {
 class _ProjectWorkspaceState extends State<ProjectWorkspace> {
   ProjectStore get s => widget.store;
   int _page = 0;
+  int _moduleTab = 0;
   String _search = '';
   String? _classFilter;
   final _searchInput = TextEditingController();
@@ -69,7 +70,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
         value: old?.studentId ?? '',
         locked: old != null,
       ),
-      FieldSpec('name', 'Họ và tên', value: old?.getName() ?? ''),
+      FieldSpec('name', 'Họ và tên', value: old?.name ?? ''),
       FieldSpec(
         'major',
         'Ngành học',
@@ -152,7 +153,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
       builder: (c) => AlertDialog(
         title: const Text('Xóa sinh viên?'),
         content: Text(
-          'Xóa ${student.getName()} (${student.studentId})? Sinh viên đã có điểm sẽ không được xóa.',
+          'Xóa ${student.name} (${student.studentId})? Sinh viên đã có điểm sẽ không được xóa.',
         ),
         actions: [
           TextButton(
@@ -396,7 +397,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
               ),
               const SizedBox(height: 5),
               const Text(
-                'Khám phá màn hình mẫu\nvà bài thực hành Flutter.',
+                'Khám phá giao diện học tập\ntheo yêu cầu Câu 5.',
                 style: TextStyle(fontSize: 11, color: muted, height: 1.6),
               ),
               const SizedBox(height: 7),
@@ -563,16 +564,22 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
               () => _open(const LearningSampleScreen()),
             ),
             _shortcut(
-              Icons.account_tree_outlined,
-              'Generics',
+              Icons.menu_book_outlined,
+              'Môn học',
               const Color(0xFF74BC5E),
-              () => _open(const GenericsScreen()),
+              () => setState(() {
+                _page = 3;
+                _moduleTab = 0;
+              }),
             ),
             _shortcut(
-              Icons.restaurant_menu_rounded,
-              'Pavlova',
+              Icons.assessment_outlined,
+              'Bảng điểm',
               const Color(0xFFB889CD),
-              () => _open(const PracticeOneScreen()),
+              () => setState(() {
+                _page = 3;
+                _moduleTab = 1;
+              }),
             ),
           ],
         ),
@@ -878,7 +885,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
         .where(
           (v) =>
               (_classFilter == null || v.classId == _classFilter) &&
-              '${v.studentId} ${v.getName()} ${v.major}'.toLowerCase().contains(
+              '${v.studentId} ${v.name} ${v.major}'.toLowerCase().contains(
                 _search.toLowerCase(),
               ),
         )
@@ -956,7 +963,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
           radius: 21,
           backgroundColor: const Color(0xFFE6F4ED),
           child: Text(
-            v.getName().split(' ').last.substring(0, 1),
+            v.name.split(' ').last.substring(0, 1),
             style: const TextStyle(color: green, fontWeight: FontWeight.w800),
           ),
         ),
@@ -968,7 +975,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  v.getName(),
+                  v.name,
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
@@ -1022,7 +1029,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
     showDialog<void>(
       context: context,
       builder: (c) => AlertDialog(
-        title: Text(v.getName()),
+        title: Text(v.name),
         content: SizedBox(
           width: 420,
           child: Column(
@@ -1182,61 +1189,33 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
   Widget _modules() => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      _heading(
-        'Môn học & bảng điểm',
-        'Danh mục môn và kết quả hiện có trong nguồn dữ liệu.',
+      SegmentedButton<int>(
+        segments: const [
+          ButtonSegment(
+            value: 0,
+            icon: Icon(Icons.menu_book_outlined),
+            label: Text('Môn học'),
+          ),
+          ButtonSegment(
+            value: 1,
+            icon: Icon(Icons.assessment_outlined),
+            label: Text('Bảng điểm'),
+          ),
+        ],
+        selected: {_moduleTab},
+        onSelectionChanged: (values) =>
+            setState(() => _moduleTab = values.first),
       ),
-      Panel(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Danh mục môn học',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 15),
-            if (s.subjects.isEmpty)
-              const EmptyState(
-                title: 'Chưa có môn học',
-                message: 'Module thêm môn đang được tích hợp.',
-              )
-            else
-              for (final sub in s.subjects)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0xFFE9F3FF),
-                    child: Text(
-                      '${sub.credits}',
-                      style: const TextStyle(color: Color(0xFF518DCC)),
-                    ),
-                  ),
-                  title: Text(sub.name),
-                  subtitle: Text(sub.id),
-                  trailing: const Text(
-                    'tín chỉ',
-                    style: TextStyle(color: muted, fontSize: 11),
-                  ),
-                ),
-          ],
+      const SizedBox(height: 24),
+      if (_moduleTab == 0)
+        SubjectsScreen(subjects: s.subjects, onCreate: s.saveSubject)
+      else
+        GradesScreen(
+          students: s.students,
+          subjects: s.subjects,
+          grades: s.grades,
+          onSave: s.saveGrade,
         ),
-      ),
-      const SizedBox(height: 18),
-      const Panel(
-        color: Color(0xFFF0F5FB),
-        child: Row(
-          children: [
-            Icon(Icons.merge_type, color: Color(0xFF6199DB)),
-            SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                'Module thêm môn, nhập và xem bảng điểm được Hiệp phát triển riêng. Sẽ ghép sau khi PR được kiểm tra.',
-                style: TextStyle(fontSize: 12, color: muted),
-              ),
-            ),
-          ],
-        ),
-      ),
     ],
   );
 
@@ -1323,7 +1302,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Bài thực hành & giao diện',
+              'Giao diện mẫu',
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
@@ -1334,18 +1313,6 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
                 color: green,
               ),
               title: const Text('Mẫu giao diện học tập · Câu 5'),
-              trailing: const Icon(Icons.chevron_right),
-            ),
-            ListTile(
-              onTap: () => _open(const GenericsScreen()),
-              leading: const Icon(Icons.account_tree_outlined, color: green),
-              title: const Text('Thực hành Generics'),
-              trailing: const Icon(Icons.chevron_right),
-            ),
-            ListTile(
-              onTap: () => _open(const PracticeOneScreen()),
-              leading: const Icon(Icons.restaurant_menu, color: green),
-              title: const Text('Thực hành Pavlova'),
               trailing: const Icon(Icons.chevron_right),
             ),
           ],

@@ -91,3 +91,13 @@ Mục “Chưa triển khai UI của 16 stories” ở phần nghiệm thu phía
 - Firestore Rules Emulator: PASS — 6 tests, project giả demo-qlsv, cổng chuẩn 18080.
 - Chẩn đoán lần chạy đầu: Java trên PATH là 26.0.1; emulator thoát mã 3221225786. Dùng JDK 21 portable sau đó thì test đạt. Không truy cập Firebase cloud và không thay đổi cài đặt Java hệ thống.
 - PR #1 head b098fd5: hai GitHub checks Flutter analyze/tests và Firestore rules emulator success; GitHub API không trả review event/comment. Rà soát hồi cứu ghi nhận finding P2 về validator kỳ học, chuyển follow-up cho US15.
+
+
+## Cập nhật tích hợp và dọn mã thực hành — 28/10/2026
+
+- Đã nối SubjectsScreen và GradesScreen của PR #5 vào ProjectWorkspace, nhận dữ liệu và callback từ ProjectStore.
+- Trang chủ có lối vào môn học/bảng điểm. Giữ màn hình mẫu học tập Câu 5; bỏ Generics/Pavlova, asset/test riêng và các màn hình placeholder cũ.
+- Student chuyển thành model độc lập, thuộc tính có kiểu và bất biến; map Firestore không đổi. Các consumer dùng thuộc tính name.
+- Các mục Generics/Pavlova ở phần nghiệm thu cũ phía trên mô tả lịch sử GĐ1 trước đợt dọn này.
+- Test tích hợp chạy trên 390×844 và 1440×1000: đi từ điều hướng chính, tạo môn, lưu điểm qua ProjectStore và đọc lại sau khi mở store mới.
+- Các kết quả demo/widget/FakeFirestore không thay thế nghiệm thu UI Android với Firebase cloud. Quyền xóa cloud vẫn khóa; học kỳ ở model/rules còn cần đồng bộ với validator UI.
