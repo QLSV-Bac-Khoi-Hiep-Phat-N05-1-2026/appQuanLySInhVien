@@ -36,7 +36,26 @@ Tại Home, chọn **Thực hành Generics**.
 - [Model, Firestore, API và hướng dẫn thiết lập](docs/02-data-and-firebase.md).
 - [Trạng thái kiểm chứng](docs/03-verification.md).
 
-Phần nền dữ liệu đã chuẩn bị; giao diện nghiệp vụ của 16 stories còn trong backlog.
+## Bản trình diễn giao diện — 28/10/2026
+
+- Trang chủ theo mẫu học tập: thẻ xanh lá/vàng/xanh dương, banner và điều hướng thích ứng điện thoại/máy tính.
+- Có màn hình mẫu học tập Câu 5 riêng; giữ Generics và Pavlova.
+- Sinh viên: tìm kiếm, lọc lớp, xem hồ sơ, thêm/sửa; lớp: thêm/sửa/xem thành viên; hồ sơ: sửa tên và đăng xuất.
+- Web chạy chế độ trình diễn với dữ liệu mẫu lưu trên trình duyệt. Dữ liệu demo tách biệt Firebase; không tự nạp mẫu vào cloud.
+- Android có form đăng nhập Firebase và lựa chọn trình diễn. Tầng dữ liệu Firebase đã có kiểm chứng nền; giao diện Android mới cần nghiệm thu trên thiết bị.
+- Xóa sinh viên có xác nhận và chặn khi có điểm trong demo. Xóa cloud vẫn khóa, chờ giải pháp ràng buộc đồng thời.
+- Module thêm môn/nhập và xem điểm của Hiệp đang chờ PR tích hợp; chưa tuyên bố 16 stories hoàn thành.
+
+Chạy bản web:
+
+```sh
+flutter pub get
+flutter run -d chrome --web-port 51238
+```
+
+Chọn **Khám phá bản trình diễn**. Có thể show theo thứ tự: trang chủ → thêm lớp → thêm sinh viên → tìm/lọc/sửa hồ sơ → cập nhật tên → màn hình mẫu Câu 5. Dữ liệu còn sau khi tải lại cùng địa chỉ/cổng trên cùng trình duyệt.
+
+Kiểm tra: `flutter analyze`, `flutter test`. Bộ test bao gồm lưu demo/mở lại, trùng mã, reference lớp, ràng buộc xóa, upsert điểm, form nhập sai/đúng và bố cục 390px/1440px.
 
 - [Hướng dẫn nhận việc cho Bắc, Phát, Khôi, Hiệp](docs/04-team-handoff.md).
 - [Bằng chứng kiểm tra Firebase cloud](docs/05-g1-cloud-evidence.json).

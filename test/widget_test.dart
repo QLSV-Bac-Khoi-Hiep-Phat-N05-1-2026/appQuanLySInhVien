@@ -8,6 +8,7 @@ void main() {
   ) async {
     await tester.pumpWidget(const MyApp());
 
+    await tester.ensureVisible(find.text('Thực hành Generics'));
     await tester.tap(find.text('Thực hành Generics'));
     await tester.pumpAndSettle();
 
