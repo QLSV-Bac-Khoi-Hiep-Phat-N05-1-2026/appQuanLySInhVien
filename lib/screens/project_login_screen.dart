@@ -7,10 +7,8 @@ import '../services/auth_service.dart';
 import '../services/project_store.dart';
 import '../services/student_data_service.dart';
 import '../ui/project_theme.dart';
-import 'generics_screen.dart';
 import 'learning_sample_screen.dart';
 import 'project_workspace.dart';
-import 'practice_one_screen.dart';
 
 class ProjectLoginScreen extends StatefulWidget {
   const ProjectLoginScreen({super.key});
@@ -322,24 +320,6 @@ class _ProjectLoginScreenState extends State<ProjectLoginScreen> {
                                   ),
                                 ),
                                 child: const Text('Mẫu giao diện · Câu 5'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const GenericsScreen(),
-                                  ),
-                                ),
-                                child: const Text('Thực hành Generics'),
-                              ),
-                              TextButton(
-                                onPressed: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const PracticeOneScreen(),
-                                  ),
-                                ),
-                                child: const Text('Phần thực hành số 1'),
                               ),
                             ],
                           ),

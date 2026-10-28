@@ -113,7 +113,7 @@ class _GradesScreenState extends State<GradesScreen> {
                       (student) => DropdownMenuItem(
                         value: student.studentId,
                         child: Text(
-                          '${student.getName()} · ${student.studentId}',
+                          '${student.name} · ${student.studentId}',
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -154,7 +154,7 @@ class _GradesScreenState extends State<GradesScreen> {
           Panel(
             child: Center(
               child: Text(
-                '${selectedStudent.getName()} chưa có điểm.',
+                '${selectedStudent.name} chưa có điểm.',
                 style: const TextStyle(color: muted),
               ),
             ),
@@ -166,7 +166,7 @@ class _GradesScreenState extends State<GradesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Kết quả của ${selectedStudent.getName()}',
+                  'Kết quả của ${selectedStudent.name}',
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
@@ -268,7 +268,7 @@ class _GradesScreenState extends State<GradesScreen> {
                           (s) => DropdownMenuItem(
                             value: s.studentId,
                             child: Text(
-                              '${s.getName()} · ${s.studentId}',
+                              '${s.name} · ${s.studentId}',
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),

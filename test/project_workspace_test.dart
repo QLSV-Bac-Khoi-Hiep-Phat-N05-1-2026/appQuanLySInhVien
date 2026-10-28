@@ -63,7 +63,7 @@ void main() {
     await tester.tap(find.text('Lưu thông tin'));
     await tester.pumpAndSettle();
     expect(
-      store.students.singleWhere((v) => v.studentId == 'NEWTEST').getName(),
+      store.students.singleWhere((v) => v.studentId == 'NEWTEST').name,
       'Sinh viên kiểm thử',
     );
     expect(find.text('Lưu thông tin'), findsNothing);

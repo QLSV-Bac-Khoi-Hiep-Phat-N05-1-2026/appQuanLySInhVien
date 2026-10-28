@@ -1,61 +1,55 @@
-# Ứng dụng quản lý sinh viên
+# EduSpace — Quản lý sinh viên
 
-Ứng dụng Flutter/Dart.
+Ứng dụng Flutter/Dart cho người quản lý: hồ sơ sinh viên, lớp học, môn học và bảng điểm.
 
-## Bài tập Generics
+## Chức năng hiện có
 
-- Theo [tài liệu của giảng viên](https://nglthu.github.io/flutter_docs/docs/generic_class).
-- Lớp dùng chung [Genericclass<T>](lib/models/generic_class.dart) có `id`, `name`, `description`, constructor và các hàm get/set.
-- Lớp có sẵn [Student](lib/models/student.dart) kế thừa `Genericclass<Object>`: `id` là mã sinh viên, `name` là họ tên, `description` là ngành học. `age` là thuộc tính riêng của sinh viên.
-- [GenericsScreen](lib/screens/generics_screen.dart) minh họa gán `Student` cho biến `Object`, lấy `Type` bằng `runtimeType`, hiển thị thông tin sinh viên.
+- Trang chủ theo phong cách mẫu học tập, bố cục phù hợp điện thoại và máy tính.
+- Sinh viên: tìm kiếm, lọc theo lớp, xem hồ sơ, thêm và sửa thông tin.
+- Lớp học: thêm/sửa và xem danh sách sinh viên của lớp.
+- Môn học: tìm kiếm, thêm môn; kiểm tra mã trùng và tín chỉ nguyên 1–10.
+- Bảng điểm: chọn sinh viên; nhập/cập nhật điểm theo môn và học kỳ; lưu cùng bộ khóa cập nhật một bản ghi.
+- Hồ sơ quản lý: xem thông tin, sửa tên và đăng xuất.
+- Màn hình mẫu học tập Câu 5 được giữ riêng theo yêu cầu bài tập lớn.
 
-Trong Dart, `runtimeType` trả về `Type` để xem thông tin lớp; Dart không có lớp tên `Class` như Java.
-Tài liệu: [Generics](https://dart.dev/language/generics), [Object.runtimeType](https://api.dart.dev/dart-core/Object/runtimeType.html).
-
-## Chạy bài
-
-```sh
-flutter pub get
-flutter run
-```
-
-Tại Home, chọn **Thực hành Generics**.
-
-## Nội dung nộp
-
-- Code chính: ba file được liên kết ở trên.
-- README: [README trên GitHub](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/blob/main/README.md).
-- Ảnh minh họa màn hình Flutter (xuất bằng widget test): [generics.png](docs/screenshots/generics.png).
-- Commit: xem commit **Hoàn thành bài tập Generics** trong [lịch sử commit](https://github.com/QLSV-Bac-Khoi-Hiep-Phat-N05-1-2026/appQuanLySInhVien/commits/main/).
-
-![Kết quả bài tập Generics](docs/screenshots/generics.png)
-
-## Bài tập lớn cuối kỳ
-
-- [16 user stories và nghiệm thu](docs/01-user-stories.md).
-- [Model, Firestore, API và hướng dẫn thiết lập](docs/02-data-and-firebase.md).
-- [Trạng thái kiểm chứng](docs/03-verification.md).
-
-## Bản trình diễn giao diện — 28/10/2026
-
-- Trang chủ theo mẫu học tập: thẻ xanh lá/vàng/xanh dương, banner và điều hướng thích ứng điện thoại/máy tính.
-- Có màn hình mẫu học tập Câu 5 riêng; giữ Generics và Pavlova.
-- Sinh viên: tìm kiếm, lọc lớp, xem hồ sơ, thêm/sửa; lớp: thêm/sửa/xem thành viên; hồ sơ: sửa tên và đăng xuất.
-- Web chạy chế độ trình diễn với dữ liệu mẫu lưu trên trình duyệt. Dữ liệu demo tách biệt Firebase; không tự nạp mẫu vào cloud.
-- Android có form đăng nhập Firebase và lựa chọn trình diễn. Tầng dữ liệu Firebase đã có kiểm chứng nền; giao diện Android mới cần nghiệm thu trên thiết bị.
-- Xóa sinh viên có xác nhận và chặn khi có điểm trong demo. Xóa cloud vẫn khóa, chờ giải pháp ràng buộc đồng thời.
-- Module thêm môn/nhập và xem điểm của Hiệp đang chờ PR tích hợp; chưa tuyên bố 16 stories hoàn thành.
-
-Chạy bản web:
+## Chạy dự án
 
 ```sh
 flutter pub get
 flutter run -d chrome --web-port 51238
 ```
 
-Chọn **Khám phá bản trình diễn**. Có thể show theo thứ tự: trang chủ → thêm lớp → thêm sinh viên → tìm/lọc/sửa hồ sơ → cập nhật tên → màn hình mẫu Câu 5. Dữ liệu còn sau khi tải lại cùng địa chỉ/cổng trên cùng trình duyệt.
+Trên web, chọn **Khám phá bản trình diễn**. Dữ liệu mẫu được lưu trên trình duyệt và không ghi vào Firebase; giữ cùng địa chỉ/cổng để dùng lại dữ liệu đã lưu.
 
-Kiểm tra: `flutter analyze`, `flutter test`. Bộ test bao gồm lưu demo/mở lại, trùng mã, reference lớp, ràng buộc xóa, upsert điểm, form nhập sai/đúng và bố cục 390px/1440px.
+Android đã có cấu hình Firebase. Chọn thiết bị bằng `flutter devices`, sau đó `flutter run -d <device-id>` để sử dụng đăng nhập Firebase hoặc chế độ trình diễn. Giao diện cloud phải được nghiệm thu trên Android trước khi đánh dấu toàn bộ user stories hoàn thành.
 
-- [Hướng dẫn nhận việc cho Bắc, Phát, Khôi, Hiệp](docs/04-team-handoff.md).
-- [Bằng chứng kiểm tra Firebase cloud](docs/05-g1-cloud-evidence.json).
+## Cấu trúc chính
+
+- `lib/screens`: đăng nhập, không gian quản lý, môn học, bảng điểm, màn hình mẫu Câu 5.
+- `lib/models`: AppUser, Student, ClassRoom, Subject và Grade; mapping Firestore.
+- `lib/services`: trạng thái dữ liệu demo/cloud, xác thực và repository có kiểu.
+- `lib/ui`: giao diện dùng chung và form nhập dữ liệu.
+- `lib/widgets/firebase_app_loader.dart`: khởi tạo Firebase và thử lại khi lỗi.
+- `test`: kiểm thử model, repository, store, màn hình và tích hợp.
+
+Student là model độc lập với thuộc tính có kiểu và bất biến. Khi sửa hồ sơ, tạo đối tượng mới; JSON và document Firestore giữ cùng cấu trúc.
+
+## Kiểm tra và phạm vi
+
+```sh
+flutter analyze
+flutter test
+flutter build web --release
+```
+
+Xóa sinh viên trong demo có xác nhận và chặn nếu đã có điểm. Quyền xóa trên Firebase vẫn khóa, chờ xử lý ràng buộc đồng thời. Web chưa cấu hình đăng nhập Firebase; không dùng kết quả demo để thay cho nghiệm thu cloud.
+
+## Tài liệu
+
+- [16 user stories và tiêu chí nghiệm thu](docs/01-user-stories.md).
+- [Model, Firestore và hướng dẫn thiết lập](docs/02-data-and-firebase.md).
+- [Lịch sử kiểm chứng](docs/03-verification.md).
+- [Ma trận kiểm thử](docs/07-test-matrix.md).
+- [Bằng chứng kiểm tra Firebase cloud nền](docs/05-g1-cloud-evidence.json).
+
+Các bài thực hành Generics/Pavlova và màn hình placeholder cũ đã được bỏ khỏi ứng dụng chính. Lịch sử thay đổi vẫn nằm trong Git.

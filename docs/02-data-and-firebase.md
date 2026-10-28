@@ -12,14 +12,14 @@ Firebase Auth quản lý thông tin xác thực. Các manager dùng chung dữ l
 | Đối tượng | Document path | Thuộc tính lưu trong document | Phương thức nền |
 |---|---|---|---|
 | AppUser | users/{uid của Firebase Auth} | email: String; displayName: String; role: 'manager' | fromMap, toMap; AuthService.signIn/signOut/updateDisplayName |
-| Student | students/{studentId} | name: String; major: String; age: int; email: String (có thể rỗng); classId: String hoặc null | fromMap, toMap, validate; giữ API Generics cũ; createStudent |
+| Student | students/{studentId} | name: String; major: String; age: int; email: String (có thể rỗng); classId: String hoặc null | fromMap, toMap, validate; createStudent |
 | ClassRoom | classes/{classId} | name: String; major: String; cohort: String | fromMap, toMap; create/update/getById/watchAll |
 | Subject | subjects/{subjectId} | name: String; credits: int | fromMap, toMap; create/update/getById/watchAll |
 | Grade | grades/{studentId~subjectId~semester} | studentId: String; subjectId: String; semester: String; score: double | fromMap, toMap; saveGrade; watchGradesForStudent |
 
 ID không lưu lặp trong dữ liệu document; snapshot.id là nguồn ID chính thức.
-Không dùng Genericclass<Object> cho model mới. Student giữ tương thích bài Generics
-đang có; dữ liệu bị sửa qua API cũ vẫn được kiểm tra trước khi serialize.
+Student là model độc lập, thuộc tính có kiểu cụ thể và không đổi trực tiếp sau khi khởi tạo.
+Cập nhật hồ sơ bằng đối tượng mới; cấu trúc document và ID Firestore được giữ nguyên.
 
 ## Quan hệ và ràng buộc
 

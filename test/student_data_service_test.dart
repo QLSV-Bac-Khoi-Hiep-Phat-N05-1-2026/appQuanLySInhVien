@@ -29,10 +29,7 @@ void main() {
       data.createStudent(Student(name: 'Không được ghi đè')),
       throwsStateError,
     );
-    expect(
-      (await data.students.getById('23016960'))!.getName(),
-      'Nguyen Van Bac',
-    );
+    expect((await data.students.getById('23016960'))!.name, 'Nguyen Van Bac');
     await expectLater(
       data.classes.create(
         ClassRoom(id: 'CNTT01', name: 'Khác', major: 'CNTT', cohort: 'K17'),
@@ -79,12 +76,17 @@ void main() {
     await seed();
     await data.createStudent(Student(studentId: 'SV2'));
     final student = (await data.students.getById('23016960'))!;
-    student.setName('Nguyễn Văn Bắc');
-    await data.students.update(student);
-    expect(
-      (await data.students.getById('23016960'))!.getName(),
-      'Nguyễn Văn Bắc',
+    await data.students.update(
+      Student(
+        studentId: student.studentId,
+        name: 'Nguyễn Văn Bắc',
+        major: student.major,
+        age: student.age,
+        email: student.email,
+        classId: student.classId,
+      ),
     );
+    expect((await data.students.getById('23016960'))!.name, 'Nguyễn Văn Bắc');
     expect(
       (await data.watchStudentsInClass('CNTT01').first).single.studentId,
       '23016960',

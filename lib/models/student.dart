@@ -1,44 +1,28 @@
-import 'generic_class.dart';
 import 'model_validation.dart';
 
-/// Keeps the existing Generics exercise API while adding Firestore mapping.
-class Student extends Genericclass<Object> {
-  int age;
-  String? classId;
-  String email;
+/// Student document. The identifier is immutable and stored in the document path.
+class Student {
+  final String studentId;
+  final String name;
+  final String major;
+  final int age;
+  final String? classId;
+  final String email;
 
   Student({
-    String name = 'Nguyen Van Bac',
-    String studentId = '23016960',
-    String major = 'Cong nghe thong tin',
+    this.name = 'Nguyen Van Bac',
+    this.studentId = '23016960',
+    this.major = 'Cong nghe thong tin',
     this.age = 21,
     this.classId,
     this.email = '',
-  }) : super(id: studentId, name: name, description: major) {
+  }) {
     validate();
   }
 
-  String get studentId => getId() as String;
-  set studentId(String value) => setId(value);
-  String get major => getDescription() as String;
-  set major(String value) => setDescription(value);
-
-  void setStudent(String name, String studentId, String major, int age) {
-    setName(name);
-    setId(studentId);
-    setDescription(major);
-    this.age = age;
-  }
-
-  @override
-  String getName() => super.getName() as String;
-  String getStudentId() => studentId;
-  String getMajor() => major;
-  int getAge() => age;
-
   void validate() {
     ModelValidation.id(studentId, 'Mã sinh viên');
-    ModelValidation.text(getName(), 'Họ tên');
+    ModelValidation.text(name, 'Họ tên');
     ModelValidation.text(major, 'Ngành');
     ModelValidation.email(email, optional: true);
     if (age < 1 || age > 120) {
@@ -58,15 +42,11 @@ class Student extends Genericclass<Object> {
     email: ModelValidation.string(data, 'email'),
   );
 
-  Map<String, dynamic> toMap() {
-    // Revalidate because the legacy Generics API allows mutation.
-    validate();
-    return {
-      'name': getName(),
-      'major': major,
-      'age': age,
-      'classId': classId,
-      'email': email,
-    };
-  }
+  Map<String, dynamic> toMap() => {
+    'name': name,
+    'major': major,
+    'age': age,
+    'classId': classId,
+    'email': email,
+  };
 }
