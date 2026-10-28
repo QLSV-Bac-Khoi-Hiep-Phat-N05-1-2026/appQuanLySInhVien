@@ -1,60 +1,22 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'screens/home_screen.dart';
-import 'screens/detail_screen.dart';
-import 'screens/contact_screen.dart';
-import 'screens/profile_screen.dart';
-import 'widgets/bottom_nav_bar.dart';
+import 'screens/project_login_screen.dart';
+import 'ui/project_theme.dart';
 import 'widgets/firebase_app_loader.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const FirebaseAppLoader(child: MyApp()));
+  runApp(kIsWeb ? const MyApp() : const FirebaseAppLoader(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Quản lý sinh viên',
-      home: const MainScreen(),
-    );
-  }
-}
-
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  int currentIndex = 0;
-
-  final List<Widget> screens = const [
-    HomeScreen(),
-    DetailScreen(),
-    ContactScreen(),
-    ProfileScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: screens[currentIndex],
-
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+    debugShowCheckedModeBanner: false,
+    title: 'EduSpace · Quản lý sinh viên',
+    theme: projectTheme(),
+    home: const ProjectLoginScreen(),
+  );
 }

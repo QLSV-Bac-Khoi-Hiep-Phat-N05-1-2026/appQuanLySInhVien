@@ -46,6 +46,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(const MyApp());
+    await tester.ensureVisible(find.text('Phần thực hành số 1'));
     await tester.tap(find.text('Phần thực hành số 1'));
     await tester.pumpAndSettle();
     expect(find.byType(PracticeOneScreen), findsOneWidget);
