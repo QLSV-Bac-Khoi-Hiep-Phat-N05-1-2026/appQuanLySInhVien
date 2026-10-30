@@ -6,6 +6,7 @@ import '../services/project_store.dart';
 import '../ui/project_theme.dart';
 import '../ui/record_form.dart';
 import 'grades_screen.dart';
+import 'admin_accounts_screen.dart';
 import 'learning_sample_screen.dart';
 import 'subjects_screen.dart';
 
@@ -23,19 +24,21 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
   String _search = '';
   String? _classFilter;
   final _searchInput = TextEditingController();
-  static const _labels = [
+  List<String> get _labels => [
     'Tổng quan',
     'Sinh viên',
     'Lớp học',
     'Môn & điểm',
     'Cá nhân',
+    if (s.profile.isAdmin) 'Tài khoản',
   ];
-  static const _icons = [
+  List<IconData> get _icons => [
     Icons.grid_view_rounded,
     Icons.people_alt_outlined,
     Icons.meeting_room_outlined,
     Icons.menu_book_outlined,
     Icons.person_outline_rounded,
+    if (s.profile.isAdmin) Icons.admin_panel_settings_outlined,
   ];
   void _go(int page) => setState(() {
     _page = page;
@@ -91,10 +94,12 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
       FieldSpec(
         'classId',
         'Lớp học',
-        value: old?.classId ?? '',
-        optional: true,
+        value:
+            old?.classId ??
+            (s.profile.isAdmin ? '' : s.classes.firstOrNull?.id ?? ''),
+        optional: s.profile.isAdmin,
         options: {
-          '': 'Chưa xếp lớp',
+          if (s.profile.isAdmin) '': 'Chưa xếp lớp',
           for (final c in s.classes) c.id: '${c.id} · ${c.name}',
         },
       ),
@@ -267,6 +272,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
                                     1 => _students(),
                                     2 => _classes(),
                                     3 => _modules(),
+                                    5 => AdminAccountsScreen(store: s),
                                     _ => _profile(),
                                   },
                                 ),
@@ -424,7 +430,10 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: const Text('Người quản lý', style: TextStyle(fontSize: 10)),
+          subtitle: Text(
+            s.profile.roleLabel,
+            style: const TextStyle(fontSize: 10),
+          ),
           trailing: IconButton(
             tooltip: 'Đăng xuất',
             onPressed: _logout,
@@ -551,12 +560,13 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
               const Color(0xFF33AFDE),
               () => _studentForm(),
             ),
-            _shortcut(
-              Icons.add_home_work_outlined,
-              'Tạo lớp học',
-              const Color(0xFFED8D6C),
-              () => _classForm(),
-            ),
+            if (s.profile.isAdmin)
+              _shortcut(
+                Icons.add_home_work_outlined,
+                'Tạo lớp học',
+                const Color(0xFFED8D6C),
+                () => _classForm(),
+              ),
             _shortcut(
               Icons.grid_view_rounded,
               'Mẫu Câu 5',
@@ -1005,6 +1015,8 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
             onSelected: (value) {
               if (value == 'edit') {
                 _studentForm(v);
+              } else if (value == 'account') {
+                _provisionStudent(v);
               } else if (value == 'delete') {
                 _delete(v);
               } else {
@@ -1014,6 +1026,14 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
             itemBuilder: (_) => [
               const PopupMenuItem(value: 'view', child: Text('Xem hồ sơ')),
               const PopupMenuItem(value: 'edit', child: Text('Sửa thông tin')),
+              PopupMenuItem(
+                value: 'account',
+                child: Text(
+                  v.accountUid == null
+                      ? 'Cấp tài khoản sinh viên'
+                      : 'Gửi lại email đặt mật khẩu',
+                ),
+              ),
               PopupMenuItem(
                 value: 'delete',
                 enabled: s.isDemo,
@@ -1087,7 +1107,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
         'Không gian lớp học',
         '${s.classes.length} lớp · Kết nối sinh viên cùng ngành và khóa',
         action: FilledButton.icon(
-          onPressed: () => _classForm(),
+          onPressed: s.profile.isAdmin ? () => _classForm() : null,
           icon: const Icon(Icons.add, size: 19),
           label: const Text('Thêm lớp học'),
         ),
@@ -1129,6 +1149,12 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
                         ),
                         const Spacer(),
                         Pill(c.cohort, color: const Color(0xFF6A8DBC)),
+                        if (s.profile.isAdmin)
+                          IconButton(
+                            tooltip: 'Phân công ${c.id}',
+                            icon: const Icon(Icons.person_add_alt_1_outlined),
+                            onPressed: () => _assignClass(c),
+                          ),
                         IconButton(
                           tooltip: 'Sửa ${c.id}',
                           onPressed: () => _classForm(c),
@@ -1208,7 +1234,11 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
       ),
       const SizedBox(height: 24),
       if (_moduleTab == 0)
-        SubjectsScreen(subjects: s.subjects, onCreate: s.saveSubject)
+        SubjectsScreen(
+          subjects: s.subjects,
+          onCreate: s.saveSubject,
+          canCreate: s.profile.isAdmin,
+        )
       else
         GradesScreen(
           students: s.students,
@@ -1247,7 +1277,7 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Pill('Người quản lý'),
+                      Pill(s.profile.roleLabel),
                     ],
                   ),
                 ),
@@ -1321,10 +1351,54 @@ class _ProjectWorkspaceState extends State<ProjectWorkspace> {
     ],
   );
 
+  Future<void> _assignClass(ClassRoom room) async {
+    if (s.activeLecturers.isEmpty) {
+      _notice('Chưa có giảng viên đang hoạt động. Duyệt giảng viên trước.');
+      return;
+    }
+    await recordForm(
+      context,
+      title: 'Phân công giảng viên',
+      subtitle: 'Lớp ${room.id} · ${room.name}',
+      fields: [
+        FieldSpec(
+          'lecturer',
+          'Giảng viên',
+          value: s.activeLecturers.any((u) => u.uid == room.lecturerId)
+              ? room.lecturerId!
+              : s.activeLecturers.first.uid,
+          options: {
+            for (final u in s.activeLecturers)
+              u.uid: '${u.displayName} · ${u.lecturerCode}',
+          },
+        ),
+      ],
+      onSave: (v) async {
+        await s.assignLecturer(room.id, v['lecturer']!);
+        _notice('Đã phân công giảng viên.');
+      },
+    );
+  }
+
+  Future<void> _provisionStudent(Student student) => recordForm(
+    context,
+    title: 'Cấp tài khoản sinh viên',
+    subtitle:
+        'Dùng email thật của ${student.name}. Hệ thống gửi thư để sinh viên tự đặt mật khẩu; không tạo hộp thư mới.',
+    fields: [
+      FieldSpec('email', 'Email đăng nhập của sinh viên', value: student.email),
+    ],
+    onSave: (v) async {
+      final message = await s.provisionStudent(student.studentId, v['email']!);
+      _notice(message);
+    },
+  );
+
   Future<void> _logout() async {
+    final navigator = Navigator.of(context);
     try {
       await s.auth?.signOut();
-      if (mounted) Navigator.of(context).pop();
+      if (navigator.mounted) navigator.pop();
     } catch (_) {
       _notice('Chưa đăng xuất được. Kiểm tra mạng rồi thử lại.');
     }

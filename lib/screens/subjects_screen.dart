@@ -9,6 +9,7 @@ class SubjectsScreen extends StatefulWidget {
     required this.subjects,
     required this.onCreate,
     this.loading = false,
+    this.canCreate = true,
     this.error,
     this.onRetry,
   });
@@ -16,6 +17,7 @@ class SubjectsScreen extends StatefulWidget {
   final List<Subject> subjects;
   final Future<void> Function(Subject) onCreate;
   final bool loading;
+  final bool canCreate;
   final String? error;
   final VoidCallback? onRetry;
 
@@ -62,11 +64,12 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                 ],
               ),
             ),
-            FilledButton.icon(
-              onPressed: widget.loading ? null : _addSubject,
-              icon: const Icon(Icons.add_rounded),
-              label: const Text('Thêm môn'),
-            ),
+            if (widget.canCreate)
+              FilledButton.icon(
+                onPressed: widget.loading ? null : _addSubject,
+                icon: const Icon(Icons.add_rounded),
+                label: const Text('Thêm môn'),
+              ),
           ],
         ),
         const SizedBox(height: 18),

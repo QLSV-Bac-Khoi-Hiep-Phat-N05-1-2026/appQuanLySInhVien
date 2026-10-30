@@ -14,7 +14,9 @@ class Grade {
   }) {
     ModelValidation.id(studentId, 'Mã sinh viên');
     ModelValidation.id(subjectId, 'Mã môn');
-    ModelValidation.id(semester, 'Học kỳ');
+    if (!RegExp(r'^[0-9]{4}-[12]$').hasMatch(semester)) {
+      throw const FormatException('Học kỳ phải có dạng YYYY-1 hoặc YYYY-2.');
+    }
     if (!score.isFinite || score < 0 || score > 10) {
       throw const FormatException('Điểm phải từ 0 đến 10.');
     }
