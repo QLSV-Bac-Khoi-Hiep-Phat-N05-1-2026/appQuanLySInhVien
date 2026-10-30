@@ -8,7 +8,9 @@ import '../services/project_store.dart';
 import '../services/student_data_service.dart';
 import '../ui/project_theme.dart';
 import 'learning_sample_screen.dart';
-import 'project_workspace.dart';
+import 'role_session_screen.dart';
+import 'pending_account_screen.dart';
+import 'lecturer_registration_screen.dart';
 
 class ProjectLoginScreen extends StatefulWidget {
   const ProjectLoginScreen({super.key});
@@ -27,48 +29,130 @@ class _ProjectLoginScreenState extends State<ProjectLoginScreen> {
       _busy = true;
       _error = null;
     });
-    ProjectStore? store;
+    AuthService? service;
+    bool transferred = false;
     try {
+      ProjectStore? store;
       if (demo) {
-        store = ProjectStore.demo();
-      } else {
-        final data = StudentDataService(FirebaseFirestore.instance);
-        final auth = AuthService(auth: FirebaseAuth.instance, data: data);
-        store = ProjectStore.cloud(
-          data,
-          auth,
-          await auth.signIn(email: _email.text, password: _password.text),
+        final role = await showModalBottomSheet<String>(
+          context: context,
+          builder: (c) => SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Chọn vai trò trình diễn',
+                    style: TextStyle(fontWeight: FontWeight.w800, fontSize: 19),
+                  ),
+                  const SizedBox(height: 12),
+                  for (final item in [
+                    ('admin', 'Admin', Icons.admin_panel_settings),
+                    ('lecturer', 'Giảng viên', Icons.school),
+                    ('student', 'Sinh viên', Icons.person),
+                  ])
+                    ListTile(
+                      leading: Icon(item.$3, color: green),
+                      title: Text(item.$2),
+                      subtitle: const Text(
+                        'Dữ liệu mẫu, không cấp quyền trên Firebase',
+                      ),
+                      onTap: () => Navigator.pop(c, item.$1),
+                    ),
+                ],
+              ),
+            ),
+          ),
         );
+        if (role == null) return;
+        store = ProjectStore.demo(role: role);
+      } else {
+        service = AuthService(
+          auth: FirebaseAuth.instance,
+          data: StudentDataService(FirebaseFirestore.instance),
+        );
+        final profile = await service.signIn(
+          email: _email.text,
+          password: _password.text,
+        );
+        if (!mounted) {
+          await service.signOut();
+          return;
+        }
+        if (!profile.isActive ||
+            (profile.isLecturer && !service.auth.currentUser!.emailVerified)) {
+          transferred = true;
+          await Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) =>
+                  PendingAccountScreen(auth: service!, profile: profile),
+            ),
+          );
+          return;
+        }
+        store = ProjectStore.cloud(service.data, service, profile);
       }
-      await store.initialize();
       if (!mounted) {
         store.dispose();
         return;
       }
-      final active = store;
       _password.clear();
-      await Navigator.of(context).push(
+      transferred = true;
+      await Navigator.push(
+        context,
         MaterialPageRoute<void>(
-          builder: (_) => ProjectWorkspace(store: active),
+          builder: (_) => RoleSessionScreen(store: store!),
         ),
       );
-      active.dispose();
     } on FirebaseAuthException catch (e) {
       if (mounted) {
         setState(
           () => _error = e.code == 'network-request-failed'
-              ? 'Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.'
-              : 'Sai thông tin đăng nhập, chưa được cấp quyền hoặc đã thử quá nhiều lần.',
+              ? 'Không kết nối được máy chủ.'
+              : 'Sai thông tin đăng nhập hoặc đã thử quá nhiều lần.',
         );
       }
-      store?.dispose();
+    } catch (e) {
+      if (mounted) {
+        setState(
+          () => _error = e is StateError
+              ? e.message.toString()
+              : e is FormatException
+              ? e.message
+              : 'Không mở được phiên làm việc. Kiểm tra kết nối hoặc liên hệ Admin.',
+        );
+      }
+    } finally {
+      if (!transferred) service?.dispose();
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _forgotPassword() async {
+    if (_email.text.trim().isEmpty) {
+      setState(
+        () => _error = 'Nhập email đăng nhập trước khi đặt lại mật khẩu.',
+      );
+      return;
+    }
+    setState(() => _busy = true);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _email.text.trim(),
+      );
+      if (mounted) {
+        setState(
+          () => _error = 'Nếu email đã có tài khoản, hãy kiểm tra hộp thư để đặt lại mật khẩu.',
+        );
+      }
     } catch (_) {
       if (mounted) {
         setState(
-          () => _error = 'Không mở được phiên làm việc. Kiểm tra quyền tài khoản và kết nối.',
+          () => _error = 'Không gửi được yêu cầu. Kiểm tra email và kết nối.',
         );
       }
-      store?.dispose();
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -216,7 +300,7 @@ class _ProjectLoginScreenState extends State<ProjectLoginScreen> {
                           ),
                           const SizedBox(height: 12),
                           const Text(
-                            'Đăng nhập để quản lý dữ liệu của nhóm.',
+                            'Đăng nhập để mở không gian theo vai trò của bạn.',
                             style: TextStyle(color: muted),
                           ),
                           const SizedBox(height: 30),
@@ -226,7 +310,7 @@ class _ProjectLoginScreenState extends State<ProjectLoginScreen> {
                               enabled: !_busy,
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
-                                labelText: 'Email quản lý',
+                                labelText: 'Email đăng nhập',
                                 prefixIcon: Icon(Icons.alternate_email),
                               ),
                               validator: (v) => v == null || !v.contains('@')
@@ -266,6 +350,28 @@ class _ProjectLoginScreenState extends State<ProjectLoginScreen> {
                             ),
                             const SizedBox(height: 14),
                           ],
+                          if (!kIsWeb)
+                            Wrap(
+                              spacing: 8,
+                              children: [
+                                TextButton(
+                                  onPressed: _busy
+                                      ? null
+                                      : () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute<void>(
+                                            builder: (_) =>
+                                                const LecturerRegistrationScreen(),
+                                          ),
+                                        ),
+                                  child: const Text('Đăng ký giảng viên'),
+                                ),
+                                TextButton(
+                                  onPressed: _busy ? null : _forgotPassword,
+                                  child: const Text('Quên mật khẩu?'),
+                                ),
+                              ],
+                            ),
                           if (_error != null)
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15),

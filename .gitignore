@@ -123,3 +123,7 @@ node_modules/
 *-debug.log
 !pubspec.lock
 !tools/firestore-tests/package-lock.json
+
+# Private backend settings
+backend/.env*
+!backend/.env.example

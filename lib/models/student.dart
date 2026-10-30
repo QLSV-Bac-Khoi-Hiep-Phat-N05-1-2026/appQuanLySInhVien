@@ -8,6 +8,7 @@ class Student {
   final int age;
   final String? classId;
   final String email;
+  final String? accountUid;
 
   Student({
     this.name = 'Nguyen Van Bac',
@@ -16,6 +17,7 @@ class Student {
     this.age = 21,
     this.classId,
     this.email = '',
+    this.accountUid,
   }) {
     validate();
   }
@@ -40,6 +42,17 @@ class Student {
         ? null
         : ModelValidation.string(data, 'classId'),
     email: ModelValidation.string(data, 'email'),
+    accountUid: data['accountUid'] as String?,
+  );
+
+  Student withAccount(String uid) => Student(
+    studentId: studentId,
+    name: name,
+    major: major,
+    age: age,
+    classId: classId,
+    email: email,
+    accountUid: uid,
   );
 
   Map<String, dynamic> toMap() => {
@@ -48,5 +61,6 @@ class Student {
     'age': age,
     'classId': classId,
     'email': email,
+    if (accountUid != null) 'accountUid': accountUid,
   };
 }
